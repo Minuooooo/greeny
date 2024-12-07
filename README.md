@@ -10,7 +10,7 @@
 <br></br>
 
 ## 기술
-Java, Spring-boot, Security, Jpa, MySQL, Docker, EC2, RDS, S3, GitHub Actions
+Java, Spring-boot, Security, JPA, MySQL, Docker, EC2, RDS, S3, GitHub Actions
 <br></br>
 
 ## 시스템 아키텍처
@@ -23,7 +23,7 @@ Java, Spring-boot, Security, Jpa, MySQL, Docker, EC2, RDS, S3, GitHub Actions
 
 ## CI/CD
 반복되는 과정을 자동화하여 애플리케이션에 변경 사항이 발생하면 자동으로 배포합니다.
-1. 빌드를 완료하고 도커 이미지를 생성한 뒤 Docker Hub에 푸쉬
+1. 빌드를 완료하고 도커 이미지를 생성한 뒤 Docker Hub에 저장
 2. EC2 서버에 접속하여 실행 중인 모든 컨테이너 중단 및 애플리케이션 이미지 삭제
 3. Docker Hub에서 이미지를 가져오고 모든 컨테이너 실행
 <br></br>
@@ -60,3 +60,4 @@ Java, Spring-boot, Security, Jpa, MySQL, Docker, EC2, RDS, S3, GitHub Actions
 ### PR: [#Issue.number] Type: Title
 - 구체적인 내용 작성
 <br>
+
