@@ -60,8 +60,3 @@ Java, Spring-boot, Security, Jpa, MySQL, Docker, EC2, RDS, S3, GitHub Actions
 ### PR: [#Issue.number] Type: Title
 - 구체적인 내용 작성
 <br>
-
-## 😁 Team
-|[미누/문민우](https://github.com/Minuooooo)|[모건/김태균](https://github.com/taegyuni)|[한/김지은](https://github.com/gol2580)|[시오/김현성](https://github.com/evgeniac10)|[준/이우성](https://github.com/dtd1614)|
-|-----|-----|-----|-----|-----|
-|![미누/문민우](https://avatars.githubusercontent.com/u/121410579?v=4)|![모건/김태균](https://avatars.githubusercontent.com/u/81752546?v=4)|![한/김지은](https://avatars.githubusercontent.com/u/86960201?v=4)|![시오/김현성](https://avatars.githubusercontent.com/u/122839143?v=4)|![준/이우성](https://avatars.githubusercontent.com/u/116648310?v=4)|
