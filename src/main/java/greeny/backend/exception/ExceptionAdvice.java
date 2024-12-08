@@ -1,6 +1,16 @@
 package greeny.backend.exception;
 
-import greeny.backend.exception.situation.*;
+import greeny.backend.exception.situation.comment.CommentNotFoundException;
+import greeny.backend.exception.situation.common.EmptyFileException;
+import greeny.backend.exception.situation.common.FileUploadFailureException;
+import greeny.backend.exception.situation.common.TypeDoesntExistsException;
+import greeny.backend.exception.situation.member.*;
+import greeny.backend.exception.situation.member.auth.*;
+import greeny.backend.exception.situation.post.PostNotFoundException;
+import greeny.backend.exception.situation.post.SelfLikeNotAllowedException;
+import greeny.backend.exception.situation.product.ProductNotFoundException;
+import greeny.backend.exception.situation.review.ReviewNotFound;
+import greeny.backend.exception.situation.store.StoreNotFoundException;
 import greeny.backend.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
@@ -24,15 +34,6 @@ public class ExceptionAdvice {
     @ResponseStatus(INTERNAL_SERVER_ERROR) // 각 예외마다 상태 코드 지정
     public Response illegalArgumentExceptionAdvice(IllegalArgumentException e) {
         log.info("e = {}", e.getMessage());
-        return failure(INTERNAL_SERVER_ERROR, e.getMessage());
-    }
-
-    // 500 에러
-    // 컨버트 실패
-    @ExceptionHandler(CannotConvertHelperException.class)
-    @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public Response cannotConvertNestedStructureException(CannotConvertHelperException e) {
-        log.error("e = {}", e.getMessage());
         return failure(INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
@@ -88,14 +89,6 @@ public class ExceptionAdvice {
     @ResponseStatus(NOT_FOUND)
     public Response roleNotFoundException() {
         return failure(NOT_FOUND, "요청한 권한 등급을 찾을 수 없습니다.");
-    }
-
-    // 404 응답
-    // Image 형식 지원하지 않음
-    @ExceptionHandler(UnsupportedImageFormatException.class)
-    @ResponseStatus(NOT_FOUND)
-    public Response unsupportedImageFormatException() {
-        return failure(NOT_FOUND, "이미지 형식을 지원하지 않습니다.");
     }
 
     // 400 응답
