@@ -1,5 +1,6 @@
 package greeny.backend.application.member.auth;
 
+import greeny.backend.config.jwt.JwtProvider;
 import greeny.backend.domain.member.*;
 import greeny.backend.exception.situation.member.MemberGeneralNotFoundException;
 import greeny.backend.exception.situation.member.MemberNotFoundException;

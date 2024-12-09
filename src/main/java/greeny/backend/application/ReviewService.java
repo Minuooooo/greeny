@@ -5,7 +5,7 @@ import greeny.backend.exception.situation.member.MemberNotEqualsException;
 import greeny.backend.exception.situation.product.ProductNotFound;
 import greeny.backend.exception.situation.review.ReviewNotFound;
 import greeny.backend.exception.situation.store.StoreNotFound;
-import greeny.backend.infrastructure.aws.S3Service;
+import greeny.backend.infrastructure.aws.S3Client;
 import greeny.backend.domain.member.Member;
 import greeny.backend.domain.product.Product;
 import greeny.backend.domain.product.ProductRepository;
@@ -44,7 +44,7 @@ public class ReviewService {
     private final StoreReviewImageRepository storeReviewImageRepository;
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
-    private final S3Service s3Service;
+    private final S3Client s3Client;
 
     /* 리뷰 작성하기 */
     @Transactional
@@ -201,7 +201,7 @@ public class ReviewService {
         List<StoreReviewImage> reviewImages = storeReviewImageRepository.findByStoreReviewId(reviewId);
         if (reviewImages != null) {
             for (StoreReviewImage img : reviewImages) {
-                s3Service.deleteFile(img.getImageUrl());
+                s3Client.deleteFile(img.getImageUrl());
             }
             storeReviewImageRepository.deleteAll(reviewImages);
         }
@@ -221,7 +221,7 @@ public class ReviewService {
         List<ProductReviewImage> reviewImages = productReviewImageRepository.findByProductReviewId(reviewId);
         if (reviewImages != null) {
             for (ProductReviewImage img : reviewImages) {
-                s3Service.deleteFile(img.getImageUrl());
+                s3Client.deleteFile(img.getImageUrl());
             }
             productReviewImageRepository.deleteAll(reviewImages);
         }
@@ -246,7 +246,7 @@ public class ReviewService {
     public void uploadFiles(List<MultipartFile> multipartFiles, StoreReview storeReview) {
         for (MultipartFile file : multipartFiles) {
             StoreReviewImage storeReviewImage = new StoreReviewImage().
-                    getEntity(storeReview, s3Service.uploadFile(file));
+                    getEntity(storeReview, s3Client.uploadFile(file));
             storeReview.getStoreReviewImages().add(storeReviewImage);
         }
     }
@@ -255,7 +255,7 @@ public class ReviewService {
     public void uploadFiles(List<MultipartFile> multipartFiles, ProductReview productReview) {
         for (MultipartFile file : multipartFiles) {
             ProductReviewImage productReviewImage = new ProductReviewImage().
-                    getEntity(productReview, s3Service.uploadFile(file));
+                    getEntity(productReview, s3Client.uploadFile(file));
             productReview.getProductReviewImages().add(productReviewImage);
         }
     }

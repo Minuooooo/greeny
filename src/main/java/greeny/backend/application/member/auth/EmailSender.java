@@ -16,7 +16,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class MailService {
+public class EmailSender {
 
     private final JavaMailSender javaMailSender;
     private final String token = generateToken();  // 사용자가 이메일 수신 후 '이메일 확인하기' 버튼을 누르면 이동할 url 뒤에 쿼리 파라미터로 추가되는 token

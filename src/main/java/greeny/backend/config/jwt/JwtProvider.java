@@ -1,4 +1,4 @@
-package greeny.backend.application.member.auth;
+package greeny.backend.config.jwt;
 
 import greeny.backend.presentation.dto.member.auth.TokenDto;
 import io.jsonwebtoken.*;

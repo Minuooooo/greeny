@@ -3,7 +3,7 @@ package greeny.backend.config.security;
 import greeny.backend.config.jwt.JwtAccessDeniedHandler;
 import greeny.backend.config.jwt.JwtAuthenticationEntryPoint;
 import greeny.backend.config.jwt.JwtFilter;
-import greeny.backend.application.member.auth.JwtProvider;
+import greeny.backend.config.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

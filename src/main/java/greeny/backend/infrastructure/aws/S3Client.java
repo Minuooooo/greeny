@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class S3Service {
+public class S3Client {
 
     private final AmazonS3 amazonS3Client;
 

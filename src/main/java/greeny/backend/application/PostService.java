@@ -1,6 +1,6 @@
 package greeny.backend.application;
 
-import greeny.backend.infrastructure.aws.S3Service;
+import greeny.backend.infrastructure.aws.S3Client;
 import greeny.backend.domain.post.PostLike;
 import greeny.backend.domain.member.Member;
 import greeny.backend.presentation.dto.post.request.WritePostRequestDto;
@@ -27,7 +27,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final S3Service s3Service;
+    private final S3Client s3Client;
 
     @Transactional
     public void writePost(WritePostRequestDto writePostRequestDto, List<MultipartFile> postFiles, Member writer) {
@@ -92,7 +92,7 @@ public class PostService {
         List<String> fileUrls = new ArrayList<>();
         for(String fileUrl : post.getFileUrls()) fileUrls.add(fileUrl);
         postRepository.delete(post);
-        for(String fileUrl : fileUrls) s3Service.deleteFile(fileUrl);
+        for(String fileUrl : fileUrls) s3Client.deleteFile(fileUrl);
     }
 
     @Transactional
@@ -113,7 +113,7 @@ public class PostService {
         // 3. 1번에서 db에서 삭제했던 post_file에 해당하는 s3의 파일을 모두 삭제
         //    (s3는 트랜잭션 롤백이 안되기 때문에 삭제는 무조건 마지막에 해야함)
         for(String fileUrl : fileUrls)
-            s3Service.deleteFile(fileUrl);
+            s3Client.deleteFile(fileUrl);
     }
 
     public void uploadPostFiles(List<MultipartFile> postFiles, Post post) {
@@ -123,7 +123,7 @@ public class PostService {
         // s3에 첨부파일을 저장하고, mysql에도 post_file을 저장
         for(MultipartFile multipartFile : postFiles){
             PostFile postFile = PostFile.builder()
-                    .fileUrl(s3Service.uploadFile(multipartFile))
+                    .fileUrl(s3Client.uploadFile(multipartFile))
                     .post(post).build();
             post.getPostFiles().add(postFile);
         }

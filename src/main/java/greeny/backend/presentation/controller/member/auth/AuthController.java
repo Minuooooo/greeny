@@ -1,6 +1,6 @@
 package greeny.backend.presentation.controller.member.auth;
 
-import greeny.backend.application.member.auth.MailService;
+import greeny.backend.application.member.auth.EmailSender;
 import greeny.backend.application.member.auth.OAuthService;
 import greeny.backend.presentation.dto.member.auth.request.AgreementRequestDto;
 import greeny.backend.presentation.dto.member.auth.request.TokenRequestDto;
@@ -33,7 +33,7 @@ import static org.springframework.http.HttpStatus.*;
 @Tag(name = "Auth", description = "Auth API Document")
 public class AuthController {
 
-    private final MailService mailService;
+    private final EmailSender emailSender;
     private final AuthService authService;
     private final OAuthService oAuthService;
     private final MemberService memberService;
@@ -45,7 +45,7 @@ public class AuthController {
     public Response sendEmail(@Valid @RequestBody AuthEmailRequestDto authEmailRequestDto) throws MessagingException, UnsupportedEncodingException {
         String email = authEmailRequestDto.getEmail();
         authService.validateSignUpInfoWithGeneral(email);
-        return success(SUCCESS_TO_SEND_EMAIL, mailService.sendSimpleMessage(email, authEmailRequestDto.getAuthorizationUrl()));
+        return success(SUCCESS_TO_SEND_EMAIL, emailSender.sendSimpleMessage(email, authEmailRequestDto.getAuthorizationUrl()));
     }
 
     // 토큰 유효성 검증 API

@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OAuthService {  // Kakao or Naver 에 토큰, 사용자 프로필 정보를 요청
+public class OAuthService {  // TODO 인터페이스 생성 -> Naver, Kakao 분리
 
     private final RestTemplate restTemplate;
     private static final String GRANT_TYPE = "authorization_code";
