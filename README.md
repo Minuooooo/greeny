@@ -1,33 +1,30 @@
 ## 서버는 비용 문제로 인해 2023.08.24 이후 비활성화 상태입니다.
-<br>
+![Architecture](https://github.com/user-attachments/assets/e4eb907b-cdf0-4b04-946e-bd2294edecf6)
+<br></br>
 
-## 소개
-- 친환경적인 삶을 추구할 수 있도록 스토어 및 제품 등의 정보를 제공하는 REST API 서버입니다.
-- "좋은 설계"란 무엇인지 고민하며 DB 테이블을 설계합니다.
-- Spring Security 기반 JWT 인증/인가 시스템, 기본적인 CRUD를 포함한 여러 기능을 구현하여 학습합니다.
+## 개요
+- 친환경적인 삶을 추구할 수 있도록 스토어, 제품 등의 정보를 제공하는 REST API 서버입니다.
+- '좋은 설계'란 무엇인지 고민하며 DB 테이블을 설계합니다.
+- Spring Security 기반 JWT 인증/인가, 기본적인 CRUD를 포함한 여러 기능을 구현하여 학습합니다.
 - CI/CD 파이프라인을 구축합니다.
 - 코드 리뷰 및 기술적 내용 공유를 통해 활발하게 소통합니다.
 <br>
 
-## 기술
+## 기술 스택
 Core
-- Java, Spring Boot/Data JPA/Security
+- Java, Spring Boot/Security, JPA
 
 Database
 - MySQL
 
 Infrastructure
-- Docker, AWS (EC2, RDS, S3), GitHub Actions
+- Docker, AWS (EC2/RDS/S3), GitHub Actions
 
 <br>
 
-## 시스템 아키텍처
-<img width="510" alt="System Architecture" src="https://github.com/user-attachments/assets/41bb5aa2-3922-4a73-b770-4c4f5dc1f53d">
-<br></br>
-
 ## ERD
 ### [ERDCloud](https://www.erdcloud.com/d/uEFmXxf2dKe9PPtLw)
-![ERDCloud](https://github.com/user-attachments/assets/0ab5ad72-93c9-4836-998c-119006e8d315)
+![ERD](https://github.com/user-attachments/assets/3fdfc759-e0e5-4156-a393-74a68005c528)
 <br></br>
 
 ## CI/CD
@@ -73,3 +70,7 @@ Infrastructure
 - 구체적인 내용 작성
 <br>
 
+## 백엔드
+|[미누/문민우](https://github.com/Minuooooo)|[모건/김태균](https://github.com/taegyuni)|[한/김지은](https://github.com/gol2580)|[시오/김현성](https://github.com/evgeniac10)|[준/이우성](https://github.com/dtd1614)|
+|-----|-----|-----|-----|-----|
+|![미누/문민우](https://avatars.githubusercontent.com/u/121410579?v=4)|![모건/김태균](https://avatars.githubusercontent.com/u/81752546?v=4)|![한/김지은](https://avatars.githubusercontent.com/u/86960201?v=4)|![시오/김현성](https://avatars.githubusercontent.com/u/122839143?v=4)|![준/이우성](https://avatars.githubusercontent.com/u/116648310?v=4)|
