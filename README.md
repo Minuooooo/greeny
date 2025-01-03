@@ -56,7 +56,7 @@ Infrastructure
 <br>
 
 ### 커밋
-`규칙: [Type] Title`
+`규칙: Type: Title`
 - env: 설정
 - feat: 기능 구현
 - refact: 리팩토링
