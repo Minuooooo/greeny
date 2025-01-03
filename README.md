@@ -24,7 +24,7 @@ Infrastructure
 
 ## ERD
 ### [ERDCloud](https://www.erdcloud.com/d/uEFmXxf2dKe9PPtLw)
-![ERD](https://github.com/user-attachments/assets/3fdfc759-e0e5-4156-a393-74a68005c528)
+![ERD](https://github.com/user-attachments/assets/b95ff4f1-54d7-4996-8d39-1aced4777b07)
 <br></br>
 
 ## CI/CD
