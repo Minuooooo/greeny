@@ -2,9 +2,6 @@ spring:
   profiles:
     active: dev
 
-  thymeleaf:
-    check-template-location: false
-
   servlet:
     multipart:
       max-file-size: 20MB
@@ -21,6 +18,9 @@ spring:
           starttls:
             enable: true
           auth: true
+
+  thymeleaf:
+    check-template-location: false
 
 oauth:
   kakao:

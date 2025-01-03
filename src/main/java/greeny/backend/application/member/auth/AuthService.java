@@ -2,7 +2,7 @@ package greeny.backend.application.member.auth;
 
 import greeny.backend.config.jwt.JwtProvider;
 import greeny.backend.domain.member.*;
-import greeny.backend.exception.situation.member.MemberGeneralNotFoundException;
+import greeny.backend.exception.situation.member.GeneralMemberNotFoundException;
 import greeny.backend.exception.situation.member.MemberNotFoundException;
 import greeny.backend.exception.situation.member.auth.EmailAlreadyExistsException;
 import greeny.backend.exception.situation.member.auth.LoginFailureException;
@@ -28,10 +28,10 @@ import java.util.Date;
 public class AuthService {
 
     private final MemberRepository memberRepository;
-    private final MemberGeneralRepository memberGeneralRepository;
-    private final MemberSocialRepository memberSocialRepository;
-    private final MemberProfileRepository memberProfileRepository;
-    private final MemberAgreementRepository memberAgreementRepository;
+    private final GeneralMemberRepository generalMemberRepository;
+    private final SocialMemberRepository socialMemberRepository;
+    private final MemberInfoRepository memberInfoRepository;
+    private final AgreementRepository agreementRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -46,7 +46,7 @@ public class AuthService {
     private Long validateSignUpInfoWithSocial(String email) {  // DB에 이미 존재하는 이메일일 때, 일반 로그인 이메일인지 검증
         Long foundMemberId = getMember(email).getId();
 
-        if(memberGeneralRepository.existsByMemberId(foundMemberId)) {
+        if(generalMemberRepository.existsByMemberId(foundMemberId)) {
             throw new EmailAlreadyExistsException(email);
         }
 
@@ -79,10 +79,10 @@ public class AuthService {
             throw new LoginFailureException();
         }
 
-        MemberGeneral foundMemberGeneral = getMemberGeneral(foundMemberId);
-        boolean foundIsAuto = foundMemberGeneral.isAuto();
+        GeneralMember foundGeneralMember = getMemberGeneral(foundMemberId);
+        boolean foundIsAuto = foundGeneralMember.isAuto();
 
-        changeIsAutoByGeneralSignIn(loginRequestDto.getIsAuto(), foundMemberGeneral, foundIsAuto);
+        changeIsAutoByGeneralSignIn(loginRequestDto.getIsAuto(), foundGeneralMember, foundIsAuto);
 
         return authorize(email, foundMemberId.toString());
     }
@@ -94,9 +94,9 @@ public class AuthService {
             Long validatedMemberId = validateSignUpInfoWithSocial(email);  // DB에 이미 존재하는 이메일일 때, 일반 로그인 이메일인지 검증
             Long foundMemberId = getMember(email).getId();
 
-            if(!memberAgreementRepository.existsByMemberId(foundMemberId)) {
+            if(!agreementRepository.existsByMemberId(foundMemberId)) {
 
-                memberAgreementRepository.save(
+                agreementRepository.save(
                         toMemberAgreement(foundMemberId, false, false)
                 );
             }
@@ -117,7 +117,7 @@ public class AuthService {
         if(!memberRepository.existsByEmail(email)) {  // DB에 이메일이 없는 경우
             throw new MemberNotFoundException();
         } else {
-            if(memberGeneralRepository.existsByMemberId(foundMemberId)) {  // 일반 로그인 사용자일 경우
+            if(generalMemberRepository.existsByMemberId(foundMemberId)) {  // 일반 로그인 사용자일 경우
                 saveMemberAgreement(foundMemberId, agreementRequestDto);  // DB에 Member 동의 여부 저장
                 return TokenResponseDto.excludeEmailInDto("nothing", "nothing");  // 토큰을 제공하지 않음
             }
@@ -157,8 +157,8 @@ public class AuthService {
 
     private void saveGeneralMember(SignUpRequestDto signUpRequestDto) {  // 일반 회원 DB에 저장
         Long savedMemberId = memberRepository.save(toMember(signUpRequestDto.getEmail())).getId();
-        memberGeneralRepository.save(toMemberGeneral(savedMemberId, signUpRequestDto.getPassword()));
-        memberProfileRepository.save(
+        generalMemberRepository.save(toMemberGeneral(savedMemberId, signUpRequestDto.getPassword()));
+        memberInfoRepository.save(
                 toMemberProfile(
                         savedMemberId,
                         signUpRequestDto.getName(),
@@ -170,11 +170,11 @@ public class AuthService {
 
     private void saveSocialMemberExceptAgreement(String email, Provider provider) {  // 소셜 회원 DB에 저장
         Member savedMember = memberRepository.save(toMember(email));
-        memberSocialRepository.save(toMemberSocial(provider, savedMember.getId()));
+        socialMemberRepository.save(toMemberSocial(provider, savedMember.getId()));
     }
 
     private void saveMemberAgreement(Long memberId, AgreementRequestDto agreementRequestDto) {  // 일반 회원가입 or 최초 소셜 로그인 시 동의 항목 여부 DB에 저장
-        memberAgreementRepository.save(
+        agreementRepository.save(
                 toMemberAgreement(
                         memberId,
                         agreementRequestDto.getPersonalInfo(),
@@ -190,23 +190,23 @@ public class AuthService {
                 .build();
     }
 
-    private MemberGeneral toMemberGeneral(Long memberId, String password) {  // MemberGeneral 객체로 변환
-        return MemberGeneral.builder()
+    private GeneralMember toMemberGeneral(Long memberId, String password) {  // MemberGeneral 객체로 변환
+        return GeneralMember.builder()
                 .memberId(memberId)
                 .password(passwordEncoder.encode(password))
                 .isAuto(false)
                 .build();
     }
 
-    private MemberSocial toMemberSocial(Provider provider, Long memberId) {  // MemberSocial 객체로 변환
-        return MemberSocial.builder()
+    private SocialMember toMemberSocial(Provider provider, Long memberId) {  // MemberSocial 객체로 변환
+        return SocialMember.builder()
                 .memberId(memberId)
                 .provider(provider)
                 .build();
     }
 
-    private MemberProfile toMemberProfile(Long memberId, String name, String phone, String birth) {  // MemberProfile 객체로 변환
-        return MemberProfile.builder()
+    private MemberInfo toMemberProfile(Long memberId, String name, String phone, String birth) {  // MemberProfile 객체로 변환
+        return MemberInfo.builder()
                 .memberId(memberId)
                 .name(name)
                 .phone(phone)
@@ -214,8 +214,8 @@ public class AuthService {
                 .build();
     }
 
-    private MemberAgreement toMemberAgreement(Long memberId, boolean personalInfo, boolean thirdParty) {  // MemberAgreement 객체로 변환
-        return MemberAgreement.builder()
+    private Agreement toMemberAgreement(Long memberId, boolean personalInfo, boolean thirdParty) {  // MemberAgreement 객체로 변환
+        return Agreement.builder()
                 .memberId(memberId)
                 .personalInfo(personalInfo)
                 .thirdParty(thirdParty)
@@ -227,19 +227,19 @@ public class AuthService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    public MemberGeneral getMemberGeneral(Long memberId) {
-        return memberGeneralRepository.findByMemberId(memberId)
-                .orElseThrow(MemberGeneralNotFoundException::new);
+    public GeneralMember getMemberGeneral(Long memberId) {
+        return generalMemberRepository.findByMemberId(memberId)
+                .orElseThrow(GeneralMemberNotFoundException::new);
     }
 
-    private void changeIsAutoByGeneralSignIn(boolean isAutoToCheck, MemberGeneral foundMemberGeneral, boolean foundIsAuto) {
+    private void changeIsAutoByGeneralSignIn(boolean isAutoToCheck, GeneralMember foundGeneralMember, boolean foundIsAuto) {
         if (!isAutoToCheck) {
             if (foundIsAuto) {
-                foundMemberGeneral.changeIsAuto(false);
+                foundGeneralMember.changeIsAuto(false);
             }
         } else {
             if (!foundIsAuto) {
-                foundMemberGeneral.changeIsAuto(true);
+                foundGeneralMember.changeIsAuto(true);
             }
         }
     }

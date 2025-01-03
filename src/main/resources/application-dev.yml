@@ -5,10 +5,23 @@ spring:
     username: greeny
     password: 1234
 
-#  flyway:
-#    enabled: false
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+#    defer-datasource-initialization: true
 
 #  flyway:
+#    enabled: false
 #    locations: classpath:/db/migration
 #    encoding: UTF-8
 #    check-location: false
@@ -18,21 +31,6 @@ spring:
 #    init:
 #      mode: always
 #      data-locations: classpath:sql/data.sql
-
-  jpa:
-    open-in-view: false
-    show-sql: true
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        format_sql: true
-        default_batch_fetch_size: 100  # Collection fetch join 시 100개씩 순차적으로 리스트를 불러옴 (DB 과부하 방지)
-        naming:
-          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-#    defer-datasource-initialization: true
 
 logging:
   level:

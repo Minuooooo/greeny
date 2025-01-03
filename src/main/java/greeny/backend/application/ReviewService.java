@@ -1,11 +1,9 @@
 package greeny.backend.application;
 
-import greeny.backend.exception.situation.common.TypeDoesntExistsException;
+import greeny.backend.exception.situation.common.TypeDoesntExistException;
 import greeny.backend.exception.situation.member.MemberNotEqualsException;
-import greeny.backend.exception.situation.product.ProductNotFound;
 import greeny.backend.exception.situation.review.ReviewNotFound;
-import greeny.backend.exception.situation.store.StoreNotFound;
-import greeny.backend.infrastructure.aws.S3Client;
+import greeny.backend.infrastructure.aws.S3Service;
 import greeny.backend.domain.member.Member;
 import greeny.backend.domain.product.Product;
 import greeny.backend.domain.product.ProductRepository;
@@ -44,7 +42,7 @@ public class ReviewService {
     private final StoreReviewImageRepository storeReviewImageRepository;
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
-    private final S3Client s3Client;
+    private final S3Service s3Service;
 
     /* 리뷰 작성하기 */
     @Transactional
@@ -82,7 +80,7 @@ public class ReviewService {
                     .map(productReview -> GetReviewListResponseDto.toDetailProductDto(productReview, type, productReview.getProduct().getId()));
         }
 
-        throw new TypeDoesntExistsException();
+        throw new TypeDoesntExistException();
     }
 
 
@@ -104,7 +102,7 @@ public class ReviewService {
                     .map(productReview -> GetReviewListResponseDto.toDetailProductDto(productReview, type, productReview.getProduct().getId()));
         }
 
-        throw new TypeDoesntExistsException();
+        throw new TypeDoesntExistException();
     }
 
     /* 스토어 OR 제품 전체 review list 불러오기 */
@@ -122,7 +120,7 @@ public class ReviewService {
 
         }
 
-        throw new TypeDoesntExistsException();
+        throw new TypeDoesntExistException();
     }
 
     /* 스토어&제품 ID로 review list 불러오기 */
@@ -142,7 +140,7 @@ public class ReviewService {
             return pages.map(GetReviewListResponseDto::from);
 
         } else
-            throw new TypeDoesntExistsException();
+            throw new TypeDoesntExistException();
     }
 
 
@@ -201,7 +199,7 @@ public class ReviewService {
         List<StoreReviewImage> reviewImages = storeReviewImageRepository.findByStoreReviewId(reviewId);
         if (reviewImages != null) {
             for (StoreReviewImage img : reviewImages) {
-                s3Client.deleteFile(img.getImageUrl());
+                s3Service.deleteFile(img.getImageUrl());
             }
             storeReviewImageRepository.deleteAll(reviewImages);
         }
@@ -221,7 +219,7 @@ public class ReviewService {
         List<ProductReviewImage> reviewImages = productReviewImageRepository.findByProductReviewId(reviewId);
         if (reviewImages != null) {
             for (ProductReviewImage img : reviewImages) {
-                s3Client.deleteFile(img.getImageUrl());
+                s3Service.deleteFile(img.getImageUrl());
             }
             productReviewImageRepository.deleteAll(reviewImages);
         }
@@ -246,7 +244,7 @@ public class ReviewService {
     public void uploadFiles(List<MultipartFile> multipartFiles, StoreReview storeReview) {
         for (MultipartFile file : multipartFiles) {
             StoreReviewImage storeReviewImage = new StoreReviewImage().
-                    getEntity(storeReview, s3Client.uploadFile(file));
+                    getEntity(storeReview, s3Service.uploadFile(file));
             storeReview.getStoreReviewImages().add(storeReviewImage);
         }
     }
@@ -255,7 +253,7 @@ public class ReviewService {
     public void uploadFiles(List<MultipartFile> multipartFiles, ProductReview productReview) {
         for (MultipartFile file : multipartFiles) {
             ProductReviewImage productReviewImage = new ProductReviewImage().
-                    getEntity(productReview, s3Client.uploadFile(file));
+                    getEntity(productReview, s3Service.uploadFile(file));
             productReview.getProductReviewImages().add(productReviewImage);
         }
     }

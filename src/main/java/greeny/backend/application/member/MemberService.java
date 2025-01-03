@@ -5,7 +5,7 @@ import greeny.backend.application.member.auth.AuthService;
 import greeny.backend.domain.product.ProductBookmarkRepository;
 import greeny.backend.domain.store.StoreBookmarkRepository;
 import greeny.backend.domain.member.*;
-import greeny.backend.exception.situation.common.TypeDoesntExistsException;
+import greeny.backend.exception.situation.common.TypeDoesntExistException;
 import greeny.backend.exception.situation.member.*;
 import greeny.backend.presentation.dto.member.request.CancelBookmarkRequestDto;
 import greeny.backend.presentation.dto.member.request.EditMemberInfoRequestDto;
@@ -25,10 +25,10 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final MemberGeneralRepository memberGeneralRepository;
-    private final MemberSocialRepository memberSocialRepository;
-    private final MemberProfileRepository memberProfileRepository;
-    private final MemberAgreementRepository memberAgreementRepository;
+    private final GeneralMemberRepository generalMemberRepository;
+    private final SocialMemberRepository socialMemberRepository;
+    private final MemberInfoRepository memberInfoRepository;
+    private final AgreementRepository agreementRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final StoreBookmarkRepository storeBookmarkRepository;
@@ -45,8 +45,8 @@ public class MemberService {
         Member currentMember = getCurrentMember();
         Long currentMemberId = currentMember.getId();
 
-        if(memberGeneralRepository.existsByMemberId(currentMemberId)) {
-            MemberProfile currentMemberInfo = getMemberProfile(currentMemberId);
+        if(generalMemberRepository.existsByMemberId(currentMemberId)) {
+            MemberInfo currentMemberInfo = getMemberProfile(currentMemberId);
             return GetMemberInfoResponseDto.toGeneralMemberDto(
                     currentMember.getEmail(),
                     currentMemberInfo.getName(),
@@ -73,7 +73,7 @@ public class MemberService {
     @Transactional
     public void editMemberInfo(EditMemberInfoRequestDto editMemberRequestDto) {  // 비밀번호 변경
 
-        MemberGeneral currentGeneralMember = authService.getMemberGeneral(getCurrentMember().getId());
+        GeneralMember currentGeneralMember = authService.getMemberGeneral(getCurrentMember().getId());
 
         //현재 비밀번호를 입력받아서 회원 맞는지 체크 하기
         if(!passwordEncoder.matches(editMemberRequestDto.getPasswordToCheck(), currentGeneralMember.getPassword())) {
@@ -88,28 +88,28 @@ public class MemberService {
         checkAndCancelBookmark(type, cancelBookmarkRequestDto.getIdsToDelete());
     }
 
-    private MemberProfile getMemberProfile(Long memberId) {
-        return memberProfileRepository.findByMemberId(memberId)
-                .orElseThrow(MemberProfileNotFoundException::new);
+    private MemberInfo getMemberProfile(Long memberId) {
+        return memberInfoRepository.findByMemberId(memberId)
+                .orElseThrow(MemberInfoNotFoundException::new);
     }
 
-    private MemberAgreement getMemberAgreement(Long memberId) {
-        return memberAgreementRepository.findByMemberId(memberId)
+    private Agreement getMemberAgreement(Long memberId) {
+        return agreementRepository.findByMemberId(memberId)
                 .orElseThrow(MemberAgreementNotFoundException::new);
     }
-    private MemberSocial getMemberSocial(Long memberId) {
-        return memberSocialRepository.findByMemberId(memberId)
-                .orElseThrow(MemberSocialNotFoundException::new);
+    private SocialMember getMemberSocial(Long memberId) {
+        return socialMemberRepository.findByMemberId(memberId)
+                .orElseThrow(SocialMemberNotFoundException::new);
     }
     private void checkAndDeleteGeneralOrSocialMember(Member currentMember, Long currentMemberId) {  // 일반, 소셜 회원인지 확인 후 삭제
-        if(memberGeneralRepository.existsByMemberId(currentMemberId)) {  // 일반 회원일 경우
-            memberGeneralRepository.delete(authService.getMemberGeneral(currentMemberId));
-            memberProfileRepository.delete(getMemberProfile(currentMemberId));
+        if(generalMemberRepository.existsByMemberId(currentMemberId)) {  // 일반 회원일 경우
+            generalMemberRepository.delete(authService.getMemberGeneral(currentMemberId));
+            memberInfoRepository.delete(getMemberProfile(currentMemberId));
         } else {  // 소셜 회원일 경우
-            memberSocialRepository.delete(getMemberSocial(currentMemberId));
+            socialMemberRepository.delete(getMemberSocial(currentMemberId));
         }
 
-        memberAgreementRepository.delete(getMemberAgreement(currentMemberId));
+        agreementRepository.delete(getMemberAgreement(currentMemberId));
         memberRepository.delete(currentMember);
     }
     private void checkAndCancelBookmark(String type, List<Long> idsToDelete) {
@@ -122,7 +122,7 @@ public class MemberService {
                 productBookmarkRepository.deleteProductBookmarksByIds(idsToDelete);
             }
         } else {  // 타입이 존재하지 않을 경우
-            throw new TypeDoesntExistsException();
+            throw new TypeDoesntExistException();
         }
     }
 }

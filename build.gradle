@@ -8,7 +8,7 @@ group = 'greeny'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '11'
+	sourceCompatibility = '17'
 }
 
 repositories {
@@ -36,7 +36,7 @@ dependencies {
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
-	// AWS S3 https://mvnrepository.com/artifact/io.awspring.cloud/spring-cloud-aws-core
+	// AWS
 	implementation 'io.awspring.cloud:spring-cloud-aws-core:2.4.4'
 
 	// Flyway
@@ -44,13 +44,13 @@ dependencies {
 //	implementation 'org.flywaydb:flyway-mysql'
 
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
+	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 }

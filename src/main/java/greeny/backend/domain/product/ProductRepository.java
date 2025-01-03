@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    Page<Product> findProductsByNameContainingIgnoreCase(String keyword, Pageable pageable);
-
     @EntityGraph(attributePaths = {"store"})
     @NotNull
     Optional<Product> findProductById(Long id);
+
+    Page<Product> findProductsByNameContainingIgnoreCase(String keyword, Pageable pageable);
 }

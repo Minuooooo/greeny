@@ -4,7 +4,7 @@ import greeny.backend.domain.member.Member;
 import greeny.backend.application.member.MemberService;
 import greeny.backend.presentation.dto.review.request.WriteReviewRequestDto;
 import greeny.backend.application.ReviewService;
-import greeny.backend.exception.situation.common.TypeDoesntExistsException;
+import greeny.backend.exception.situation.common.TypeDoesntExistException;
 import greeny.backend.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,7 +49,7 @@ public class ReviewController {
             reviewService.writeProductReview(id,writeReviewRequestDto,multipartFiles,memberService.getCurrentMember());
             return success(SUCCESS_TO_WRITE_PRODUCT_REVIEW);
         }
-        else throw new TypeDoesntExistsException();
+        else throw new TypeDoesntExistException();
     }
 
     /* 검색 OR getAllSimpleReviewInfos API */
@@ -83,7 +83,7 @@ public class ReviewController {
         }else if(type.equals("product")){
             return success(SUCCESS_TO_GET_PRODUCT_REVIEW,reviewService.getProductReviewInfo(id));
         }else {
-            throw new TypeDoesntExistsException();
+            throw new TypeDoesntExistException();
         }
     }
 
@@ -98,7 +98,7 @@ public class ReviewController {
         }else if(type.equals("product")){
             return success(SUCCESS_TO_GET_PRODUCT_REVIEW,reviewService.getProductReviewInfoWithAuth(id,memberService.getCurrentMember()));
         }else {
-            throw new TypeDoesntExistsException();
+            throw new TypeDoesntExistException();
         }
     }
 
@@ -116,6 +116,6 @@ public class ReviewController {
         else if(type.equals("product")) {
             reviewService.deleteProductReview(id,currentMember);
             return success(SUCCESS_TO_DELETE_PRODUCT_REVIEW);
-        } else throw new TypeDoesntExistsException();
+        } else throw new TypeDoesntExistException();
     }
 }

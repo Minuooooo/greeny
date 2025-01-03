@@ -9,7 +9,7 @@ import greeny.backend.presentation.dto.product.GetSimpleProductInfosResponseDto;
 import greeny.backend.domain.product.Product;
 import greeny.backend.presentation.dto.store.GetSimpleStoreInfosResponseDto;
 import greeny.backend.domain.store.Store;
-import greeny.backend.exception.situation.common.TypeDoesntExistsException;
+import greeny.backend.exception.situation.common.TypeDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -59,7 +59,7 @@ public class BookmarkService {  // Controller -> Service 의존성을 유지하�
         } else if(type.equals("product")) {  // 제품 찜하기
             toggleProductBookmark(productService.getProduct(id), liker);
         } else {
-            throw new TypeDoesntExistsException();
+            throw new TypeDoesntExistException();
         }
     }
 

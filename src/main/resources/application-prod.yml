@@ -5,25 +5,25 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
 
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: false
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
 #  flyway:
 #    locations: classpath:/db/migration
 #    encoding: UTF-8
 #    check-location: false
 #    baseline-on-migration: true
 
-  jpa:
-    open-in-view: false
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: true
-        naming:
-          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-
-  logging:
-    level:
-      root: INFO
+logging:
+  level:
+    root: INFO

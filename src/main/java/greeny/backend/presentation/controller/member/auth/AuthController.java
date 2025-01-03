@@ -1,8 +1,7 @@
 package greeny.backend.presentation.controller.member.auth;
 
-import greeny.backend.application.member.auth.EmailSender;
-import greeny.backend.application.member.auth.OAuthService;
-import greeny.backend.presentation.dto.member.auth.request.AgreementRequestDto;
+import greeny.backend.infrastructure.mail.SimpleMailSender;
+import greeny.backend.infrastructure.oauth.OAuthService;
 import greeny.backend.presentation.dto.member.auth.request.TokenRequestDto;
 import greeny.backend.presentation.dto.member.auth.request.AuthEmailRequestDto;
 import greeny.backend.presentation.dto.member.auth.request.FindPasswordRequestDto;
@@ -17,59 +16,47 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
-
 import static greeny.backend.response.Response.*;
 import static greeny.backend.response.SuccessMessage.*;
 import static org.springframework.http.HttpStatus.*;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-@Tag(name = "Auth", description = "Auth API Document")
+@Tag(name = "Auth", description = "Auth API")
+@Slf4j
 public class AuthController {
-
-    private final EmailSender emailSender;
+    private final SimpleMailSender simpleMailSender;
     private final AuthService authService;
     private final OAuthService oAuthService;
     private final MemberService memberService;
 
-    // 이메일 전송 API
-    @Operation(summary = "Authenticate email API", description = "put your email to authenticate.")
-    @ResponseStatus(OK)
     @PostMapping()
-    public Response sendEmail(@Valid @RequestBody AuthEmailRequestDto authEmailRequestDto) throws MessagingException, UnsupportedEncodingException {
+    @ResponseStatus(OK)
+    @Operation(summary = "이메일 인증", description = "이메일을 입력해주세요.")
+    public Response sendEmail(@Valid @RequestBody AuthEmailRequestDto authEmailRequestDto)
+            throws MessagingException, UnsupportedEncodingException {
         String email = authEmailRequestDto.getEmail();
         authService.validateSignUpInfoWithGeneral(email);
-        return success(SUCCESS_TO_SEND_EMAIL, emailSender.sendSimpleMessage(email, authEmailRequestDto.getAuthorizationUrl()));
+        return success(SUCCESS_TO_SEND_EMAIL, simpleMailSender.sendSimpleMessage(email, authEmailRequestDto.getAuthorizationUrl()));
     }
 
-    // 토큰 유효성 검증 API
-    @Operation(summary = "Valid token API", description = "put your token info to what you want to validate.")
-    @ResponseStatus(OK)
     @GetMapping()
+    @ResponseStatus(OK)
+    @Operation(summary = "토큰 유효성 검증", description = "토큰을 포함해주세요")
     public Response getTokenStatusInfo(@RequestHeader("Authorization") String bearerToken) {
         return success(SUCCESS_TO_VALIDATE_TOKEN, authService.getTokenStatusInfo(bearerToken));
     }
 
-    @Operation(summary = "Sign up API", description = "put your sign up info.")
-    @ResponseStatus(CREATED)
     @PostMapping("/sign-up")
+    @ResponseStatus(CREATED)
+    @Operation(summary = "회원가입", description = "이메일과 비밀번호를 규정에 맞게 입력해주세요.")
     public Response signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
         authService.signUp(signUpRequestDto);
         return success(SUCCESS_TO_SIGN_UP);
-    }
-
-    // 회원가입 or 소셜 로그인 동의 항목 체크 여부 요청받는 API
-    @Operation(summary = "Social sign up agreement API", description = "put your social sign up agreement info.")
-    @ResponseStatus(CREATED)
-    @PostMapping("/sign-up/agreement")
-    public Response agreementInSignUp(@Valid @RequestBody AgreementRequestDto agreementRequestDto) {
-        return success(SUCCESS_TO_SIGN_UP_AGREEMENT, authService.agreementInSignUp(agreementRequestDto));
     }
 
     @Operation(summary = "General sign in API", description = "put your sign in info.")

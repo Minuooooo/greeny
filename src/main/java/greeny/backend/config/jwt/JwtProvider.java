@@ -12,23 +12,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Component
+@Slf4j
 public class JwtProvider {
-
     private final Key key;
-
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 3; // 3시간
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
+    private static final long ACCESS_TOKEN_EXPIRE = 1000 * 60 * 60 * 3;
+    private static final long REFRESH_TOKEN_EXPIRE = 1000 * 60 * 60 * 24 * 7;
 
     public JwtProvider(@Value(("${jwt.secret}")) String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -39,34 +36,28 @@ public class JwtProvider {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, getAuthorities(authentication))
-                .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
+                .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     public TokenDto generateTokenDto(Authentication authentication) {
-
         long now = (new Date()).getTime();
-        Date refreshTokenExpiresIn = new Date(now + REFRESH_TOKEN_EXPIRE_TIME);
-
+        Date refreshTokenExpiresAt = new Date(now + REFRESH_TOKEN_EXPIRE);
         return TokenDto.builder()
                 .grantType(BEARER_TYPE)
                 .accessToken(generateAccessToken(authentication, now))
-                .refreshToken(generateRefreshToken(refreshTokenExpiresIn))
-                .refreshTokenExpiresIn(refreshTokenExpiresIn.getTime())
+                .refreshToken(generateRefreshToken(refreshTokenExpiresAt))
+                .refreshTokenExpiresIn(refreshTokenExpiresAt.getTime())
                 .build();
     }
 
     public Authentication getAuthentication(String accessToken) {
-
         Claims claims = parseClaims(accessToken);
-
         if(claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
-
         Collection<? extends GrantedAuthority> authorities = getAuthorities(claims);
-
         return new UsernamePasswordAuthenticationToken(
                 new User(claims.getSubject(), "", authorities),
                 "",
@@ -90,17 +81,17 @@ public class JwtProvider {
         return false;
     }
 
+    private String getAuthorities(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+    }
+
     private String generateRefreshToken(Date tokenExpiresIn) {
         return Jwts.builder()
                 .setExpiration(tokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-    }
-
-    private String getAuthorities(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(Claims claims) {

@@ -1,23 +1,20 @@
 package greeny.backend.domain.member;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
+@Getter
 public class RefreshToken {
     @Id
-    @Column(name = "rt_key")
+    @Column(name = "refresh_token_key")
     private String key;
-    @Column(name = "rt_value")
+
+    @Column(name = "refresh_token_value")
     private String value;
 }
