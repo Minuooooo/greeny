@@ -19,10 +19,12 @@ import static org.springframework.http.HttpMethod.GET;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final JwtProvider jwtProvider;
     private final CorsFilter corsFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
     private static final String[] AUTH_WHITELIST_WITH_MEMBER_AUTH = {
             "/swagger-ui/**",
             "/api-docs/**",
@@ -33,17 +35,20 @@ public class SecurityConfig {
             "/api/auth/password",
             "/api/auth/reissue"
     };
+
     private static final String[] AUTH_WHITELIST_WITH_ECO_GET_METHOD = {
             "/api/stores/simple",
             "/api/products/simple",
             "/api/stores",
             "/api/products"
     };
+
     private static final String[] AUTH_WHITELIST_WITH_REVIEW_GET_METHOD = {
             "/api/reviews/all",
             "/api/reviews/simple",
             "/api/reviews"
     };
+
     private static final String[] AUTH_WHITELIST_WITH_COMMUNITY_GET_METHOD = {
             "/api/posts",
             "/api/posts/search",
@@ -64,9 +69,11 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
+
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
                 .and()
                 .authorizeRequests(authorize -> authorize
                         .antMatchers(AUTH_WHITELIST_WITH_MEMBER_AUTH)

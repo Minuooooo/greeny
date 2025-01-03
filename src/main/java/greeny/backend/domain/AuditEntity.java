@@ -11,24 +11,26 @@ import javax.persistence.PreUpdate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 public class AuditEntity {
+
     @CreatedDate
     private String createdAt;
+
     @LastModifiedDate
     private String updatedAt;
 
     @PrePersist
-    public void prePersist() {
+    private void prePersist() {
         String format = formatDateTime();
         this.createdAt = format;
         this.updatedAt = format;
     }
 
     @PreUpdate
-    public void preUpdate() {
+    private void preUpdate() {
         this.updatedAt = formatDateTime();
     }
 

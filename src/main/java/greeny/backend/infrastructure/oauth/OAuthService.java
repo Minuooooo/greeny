@@ -1,9 +1,9 @@
 package greeny.backend.infrastructure.oauth;
 
-import greeny.backend.presentation.dto.member.auth.KakaoMemberInfoDto;
-import greeny.backend.presentation.dto.member.auth.NaverMemberInfoDto;
-import greeny.backend.presentation.dto.member.auth.SocialTokenDto;
-import greeny.backend.exception.situation.member.auth.EmptySocialTokenException;
+import greeny.backend.domain.member.presentation.dto.KakaoMemberInfoDto;
+import greeny.backend.domain.member.presentation.dto.NaverMemberInfoDto;
+import greeny.backend.domain.member.presentation.dto.SocialTokenDto;
+import greeny.backend.exception.situation.member.EmptySocialTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OAuthService {  // TODO 인터페이스 생성 -> Naver, Kakao 분리
-    private final RestTemplate restTemplate;
-    private static final String GRANT_TYPE = "authorization_code";
+public class OAuthService {
 
     @Value("${oauth.kakao.client-id}")
     private String kakaoClientId;
@@ -30,6 +28,9 @@ public class OAuthService {  // TODO 인터페이스 생성 -> Naver, Kakao 분�
 
     @Value("${oauth.naver.secret}")
     private String naverClientSecret;
+
+    private static final String GRANT_TYPE = "authorization_code";
+    private final RestTemplate restTemplate;
 
     public KakaoMemberInfoDto requestToKakao(String authorizationCode) {
         return requestMemberInfoToKakao(requestToken(authorizationCode));

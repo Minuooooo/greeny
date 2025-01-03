@@ -23,10 +23,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class S3Service {
-    private final AmazonS3 s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
+    private final AmazonS3 s3Client;
 
     public String uploadFile(MultipartFile multipartFile) {
         validateFileExists(multipartFile);
@@ -66,7 +66,7 @@ public class S3Service {
 
     private String getFileExtension(String fileName) {
         String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-        if(!StringUtils.hasText(fileExtension)) {
+        if (!StringUtils.hasText(fileExtension)) {
             throw new StringIndexOutOfBoundsException();
         }
         return fileExtension;

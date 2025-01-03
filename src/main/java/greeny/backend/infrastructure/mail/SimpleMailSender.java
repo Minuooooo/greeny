@@ -1,6 +1,6 @@
 package greeny.backend.infrastructure.mail;
 
-import greeny.backend.presentation.dto.member.auth.response.GetEmailAuthInfoResponseDto;
+import greeny.backend.domain.member.presentation.dto.GetEmailAuthInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
@@ -16,21 +16,25 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class SimpleMailSender {
-    private final JavaMailSender javaMailSender;
-    private final String token = generateToken();
 
     @Value("${spring.mail.username}")
     private String username;
+    private final JavaMailSender javaMailSender;
+    private final String token = generateToken();
 
     public GetEmailAuthInfoResponseDto sendSimpleMessage(String to, String authorizationUrl)
             throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = createMessage(to, authorizationUrl);
         try {
             javaMailSender.send(message);
+
         } catch (MailException e) {
             throw new IllegalArgumentException("이메일 전송 오류");
         }
-        return new GetEmailAuthInfoResponseDto(to, token);
+        return GetEmailAuthInfoResponseDto.builder()
+                .email(to)
+                .token(token)
+                .build();
     }
 
     private String generateToken() {
@@ -58,9 +62,11 @@ public class SimpleMailSender {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.addRecipients(Message.RecipientType.TO, to);
         message.setSubject("이메일 인증");
+
         String link = authorizationUrl + "?token=" + token;
         String buttonText = "이메일 확인하기";
         String msgg="";
+
         msgg+= "<div style='margin:20px;'>";
         msgg+= "<h1> 안녕하세요 GREENY 입니다. </h1>";
         msgg+= "<br>";
@@ -73,6 +79,7 @@ public class SimpleMailSender {
                 + buttonText
                 + "</a>";
         msgg += "</div></div></div>";
+
         message.setText(msgg, "utf-8", "html");
         message.setFrom(new InternetAddress(username,"GREENY"));
         return message;

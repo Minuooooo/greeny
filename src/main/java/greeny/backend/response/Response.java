@@ -6,16 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static lombok.AccessLevel.PRIVATE;
 import static org.springframework.http.HttpStatus.OK;
 
-@JsonInclude(NON_NULL)
 @AllArgsConstructor(access = PRIVATE)
-@Schema(description = "This is response message from server")
-@JsonPropertyOrder({"isSuccess", "code", "message", "data"})
 @Getter
+@JsonPropertyOrder({"isSuccess", "code", "message", "data"})
+@JsonInclude(NON_NULL)
+@Schema(description = "This is response message from server")
 public class Response {
 
     private Boolean isSuccess;
