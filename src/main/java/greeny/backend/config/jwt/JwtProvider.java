@@ -1,6 +1,6 @@
 package greeny.backend.config.jwt;
 
-import greeny.backend.presentation.dto.member.auth.TokenDto;
+import greeny.backend.domain.member.presentation.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -21,11 +21,12 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtProvider {
-    private final Key key;
+
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "bearer";
     private static final long ACCESS_TOKEN_EXPIRE = 1000 * 60 * 60 * 3;
     private static final long REFRESH_TOKEN_EXPIRE = 1000 * 60 * 60 * 24 * 7;
+    private final Key key;
 
     public JwtProvider(@Value(("${jwt.secret}")) String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);

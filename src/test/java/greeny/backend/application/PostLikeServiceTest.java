@@ -1,11 +1,12 @@
 package greeny.backend.application;
 
-import greeny.backend.domain.post.Post;
-import greeny.backend.domain.post.PostLikeRepository;
-import greeny.backend.domain.post.PostRepository;
+import greeny.backend.domain.post.application.PostLikeService;
+import greeny.backend.domain.post.entity.Post;
+import greeny.backend.domain.post.entity.PostLikeRepository;
+import greeny.backend.domain.post.entity.PostRepository;
 import greeny.backend.domain.member.Member;
-import greeny.backend.domain.member.Role;
-import greeny.backend.domain.member.MemberRepository;
+import greeny.backend.domain.member.entity.Role;
+import greeny.backend.domain.member.entity.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

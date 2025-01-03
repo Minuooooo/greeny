@@ -5,6 +5,18 @@ spring:
     username: greeny
     password: 1234
 
+#  flyway:
+#    enabled: false
+#    locations: classpath:/db/migration
+#    encoding: UTF-8
+#    check-location: false
+#    baseline-on-migration: true
+#
+#  sql:
+#    init:
+#      mode: always
+#      data-locations: classpath:sql/data.sql
+
   jpa:
     open-in-view: false
     show-sql: true
@@ -19,18 +31,6 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
 #    defer-datasource-initialization: true
-
-#  flyway:
-#    enabled: false
-#    locations: classpath:/db/migration
-#    encoding: UTF-8
-#    check-location: false
-#    baseline-on-migration: true
-
-#  sql:
-#    init:
-#      mode: always
-#      data-locations: classpath:sql/data.sql
 
 logging:
   level:
