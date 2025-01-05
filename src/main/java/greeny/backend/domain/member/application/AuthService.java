@@ -6,12 +6,13 @@ import greeny.backend.domain.member.presentation.dto.*;
 import greeny.backend.exception.situation.member.GeneralMemberNotFoundException;
 import greeny.backend.exception.situation.member.MemberNotFoundException;
 import greeny.backend.exception.situation.member.EmailAlreadyExistsException;
-import greeny.backend.exception.situation.member.LoginFailureException;
 import greeny.backend.exception.situation.member.RefreshTokenNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,12 +39,10 @@ public class AuthService {
         }
     }
 
-    private Long validateSignUpInfoWithSocial(String email) {
-        Long foundMemberId = getMember(email).getId();
-        if(generalMemberRepository.existsByMemberId(foundMemberId)) {
+    private void validateSignUpInfoWithSocial(String email) {
+        if (generalMemberRepository.existsByMemberId(getMember(email).getId())) {
             throw new EmailAlreadyExistsException(email);
         }
-        return foundMemberId;
     }
 
     public GetTokenStatusInfoResponseDto getTokenStatusInfo(String bearerToken) {
@@ -75,16 +74,28 @@ public class AuthService {
 
     public TokenResponseDto signInWithSocial(String email, Provider provider) {
         if(memberRepository.existsByEmail(email)) {
-            Long validatedMemberId = validateSignUpInfoWithSocial(email);
-            Long foundMemberId = getMember(email).getId();
+            Member foundMember = getMember(email);
+            Long foundMemberId = foundMember.getId();
+            String foundMemberEmail = foundMember.getEmail();
+
             if(!agreementRepository.existsByMemberId(foundMemberId)) {
                 agreementRepository.save(toAgreement(foundMemberId, false, false));
             }
 
-            TokenResponseDto authorizedToken = publishToken(new UsernamePasswordAuthenticationToken(email, validatedMemberId.toString()));
+            TokenResponseDto authorizedToken = publishToken(UsernamePasswordAuthenticationToken.authenticated(
+                    foundMemberEmail,
+                    foundMemberId.toString(),
+                    User.builder()
+                            .username(foundMember.getEmail())
+                            .password(passwordEncoder.encode(foundMemberId.toString()))
+                            .authorities(new SimpleGrantedAuthority(foundMember.getRole().toString()))
+                            .build()
+                            .getAuthorities()
+            ));
             return TokenResponseDto.from(authorizedToken.getAccessToken(), authorizedToken.getRefreshToken());
         }
 
+        validateSignUpInfoWithSocial(email);
         saveSocialMemberExceptAgreement(email, provider);
         return TokenResponseDto.excludeTokenInDto(email);
     }
