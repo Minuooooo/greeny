@@ -67,15 +67,10 @@ public class AuthService {
     @Transactional
     public TokenResponseDto signInWithGeneral(LoginRequestDto loginRequestDto) {
         String email = loginRequestDto.getEmail();
-        Long foundMemberId = getMember(email).getId();
-        if(!passwordEncoder.matches(loginRequestDto.getPassword(), getGeneralMember(foundMemberId).getPassword())) {
-            throw new LoginFailureException();
-        }
-
-        GeneralMember foundGeneralMember = getGeneralMember(foundMemberId);
+        GeneralMember foundGeneralMember = getGeneralMember(getMember(email).getId());
         boolean foundIsAuto = foundGeneralMember.isAuto();
         changeIsAutoByGeneralSignIn(loginRequestDto.getIsAuto(), foundGeneralMember, foundIsAuto);
-        return authorize(email, foundMemberId.toString());
+        return authorize(email, loginRequestDto.getPassword());
     }
 
     public TokenResponseDto signInWithSocial(String email, Provider provider) {
@@ -86,7 +81,7 @@ public class AuthService {
                 agreementRepository.save(toAgreement(foundMemberId, false, false));
             }
 
-            TokenResponseDto authorizedToken = authorize(email, validatedMemberId.toString());
+            TokenResponseDto authorizedToken = publishToken(new UsernamePasswordAuthenticationToken(email, validatedMemberId.toString()));
             return TokenResponseDto.from(authorizedToken.getAccessToken(), authorizedToken.getRefreshToken());
         }
 
@@ -230,9 +225,9 @@ public class AuthService {
         }
     }
 
-    private TokenResponseDto authorize(String email, String memberId) {
+    private TokenResponseDto authorize(String email, String password) {
         Authentication authentication = authenticationManagerBuilder.getObject()
-                .authenticate(new UsernamePasswordAuthenticationToken(email, memberId));
+                .authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
         if (refreshTokenRepository.existsById(email)) {
             RefreshToken foundRefreshToken = getRefreshToken(email);
@@ -272,11 +267,9 @@ public class AuthService {
     }
 
     private void validateRefreshTokenOwner(String email, String refreshToken) {
-        if (
-                !refreshTokenRepository.findById(email)
-                        .orElseThrow(RefreshTokenNotFoundException::new)
-                        .getValue()
-                        .equals(refreshToken)
+        if (!refreshTokenRepository.findById(email).orElseThrow(RefreshTokenNotFoundException::new)
+                .getValue()
+                .equals(refreshToken)
         ) {
             throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
         }
