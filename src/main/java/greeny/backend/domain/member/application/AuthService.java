@@ -74,6 +74,8 @@ public class AuthService {
 
     public TokenResponseDto signInWithSocial(String email, Provider provider) {
         if(memberRepository.existsByEmail(email)) {
+            validateSignUpInfoWithSocial(email);
+
             Member foundMember = getMember(email);
             Long foundMemberId = foundMember.getId();
             String foundMemberEmail = foundMember.getEmail();
@@ -95,7 +97,6 @@ public class AuthService {
             return TokenResponseDto.from(authorizedToken.getAccessToken(), authorizedToken.getRefreshToken());
         }
 
-        validateSignUpInfoWithSocial(email);
         saveSocialMemberExceptAgreement(email, provider);
         return TokenResponseDto.excludeTokenInDto(email);
     }

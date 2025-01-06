@@ -73,20 +73,29 @@ public class AuthController {
     @PostMapping("/sign-in/kakao")
     @ResponseStatus(OK)
     @Operation(summary = "Kakao sign in API", description = "Put your kakao sign in info")
-    public Response signInWithKakao(String authorizationCode) {
+    public Response signInWithKakao(@RequestBody KakaoSignInRequestDto kakaoSignInRequestDto) {
         return success(
                 SUCCESS_TO_SIGN_IN,
-                authService.signInWithSocial(oAuthService.requestToKakao(authorizationCode).getKakaoAccount().getEmail(), Provider.KAKAO)
+                authService.signInWithSocial(
+                        oAuthService.requestToKakao(kakaoSignInRequestDto.getAuthorizationCode()).getKakaoAccount().getEmail(),
+                        Provider.KAKAO
+                )
         );
     }
 
     @PostMapping("/sign-in/naver")
     @ResponseStatus(OK)
     @Operation(summary = "Naver sign in API", description = "Put your naver sign in info")
-    public Response signInWithNaver(String authorizationCode, String state) {
+    public Response signInWithNaver(@RequestBody NaverSignInRequestDto naverSignInRequestDto) {
         return success(
                 SUCCESS_TO_SIGN_IN,
-                authService.signInWithSocial(oAuthService.requestToNaver(authorizationCode, state).getResponse().getEmail(), Provider.NAVER)
+                authService.signInWithSocial(
+                        oAuthService.requestToNaver(
+                                naverSignInRequestDto.getAuthorizationCode(),
+                                naverSignInRequestDto.getState()
+                        ).getResponse().getEmail(),
+                        Provider.NAVER
+                )
         );
     }
 
