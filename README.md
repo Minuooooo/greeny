@@ -29,11 +29,12 @@ Infrastructure
 <br></br>
 
 ## CI/CD 파이프라인
+![CI/CD 파이프라인](https://github.com/user-attachments/assets/60156817-df65-465a-ae88-d7b07be46ff7)
 1. 애플리케이션 빌드
 2. 도커 이미지 생성 및 Docker Hub에 저장
 3. 실행 중인 컨테이너 중단 및 삭제
 4. 앞서 저장한 이미지를 가져온 뒤 새로운 컨테이너 실행
-<br></br>
+<br>
 
 ## 컨벤션
 ### 코드 리뷰
