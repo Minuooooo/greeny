@@ -1,5 +1,5 @@
 ## 서버는 비용 문제로 인해 2023.08.24 이후 비활성화 상태입니다.
-![아키텍처](https://github.com/user-attachments/assets/d93ab1ad-ae0e-4680-917b-6152a5d97eb6)
+![아키텍처](https://github.com/user-attachments/assets/fbfa6c4d-d0bd-46e3-9d5d-c92006c0fdb6)
 <br></br>
 
 ## 개요
@@ -25,7 +25,7 @@ Infrastructure
 
 ## ERD
 ### [ERDCloud](https://www.erdcloud.com/d/uEFmXxf2dKe9PPtLw)
-![ERD](https://github.com/user-attachments/assets/0cd78820-5fee-4694-8af7-7b07c8d680c4)
+![ERD](https://github.com/user-attachments/assets/c582a1ae-15db-48ba-a19f-6b52b6aaaef9)
 <br></br>
 
 ## CI/CD 파이프라인
