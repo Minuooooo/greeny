@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
-import static greeny.backend.domain.Target.*;
+import static greeny.backend.domain.Eco.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,10 +53,10 @@ public class WishlistService {
     }
 
     public void toggleStoreWishlist(String type, Long id, Member liker) {
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             checkAndToggleStoreWishlistBySituation(storeService.getStore(id), liker);
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             toggleProductWishlist(productService.getProduct(id), liker);
         }
         else {

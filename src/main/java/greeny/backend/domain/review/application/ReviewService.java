@@ -32,8 +32,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
-
-import static greeny.backend.domain.Target.*;
+import static greeny.backend.domain.Eco.*;
 
 @Service
 @RequiredArgsConstructor
@@ -67,11 +66,11 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public Page<GetReviewListResponseDto> getMemberReviewList(String type, Pageable pageable, Member member) {
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             return storeReviewRepository.findAllByReviewer(pageable, member)
                     .map(storeReview -> GetReviewListResponseDto.toDetailStoreDto(storeReview, type, storeReview.getStore().getId()));
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             return productReviewRepository.findAllByReviewer(pageable, member)
                     .map(productReview -> GetReviewListResponseDto.toDetailProductDto(productReview, type, productReview.getProduct().getId()));
         }
@@ -83,11 +82,11 @@ public class ReviewService {
         if (!StringUtils.hasText(keyword))
             return getAllSimpleReviewInfos(type, pageable);
 
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             return storeReviewRepository.findAllByContentContainingIgnoreCase(keyword, pageable)
                     .map(storeReview -> GetReviewListResponseDto.toDetailStoreDto(storeReview, type, storeReview.getStore().getId()));
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             return productReviewRepository.findAllByContentContainingIgnoreCase(keyword, pageable)
                     .map(productReview -> GetReviewListResponseDto.toDetailProductDto(productReview, type, productReview.getProduct().getId()));
         }
@@ -95,11 +94,11 @@ public class ReviewService {
     }
 
     private Page<GetReviewListResponseDto> getAllSimpleReviewInfos(String type, Pageable pageable) {
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             return storeReviewRepository.findAll(pageable)
                     .map(storeReview -> GetReviewListResponseDto.toDetailStoreDto(storeReview, type, storeReview.getStore().getId()));
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             return productReviewRepository.findAll(pageable)
                     .map(productReview -> GetReviewListResponseDto.toDetailProductDto(productReview, type, productReview.getProduct().getId()));
         }
@@ -108,12 +107,12 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public Page<GetReviewListResponseDto> getSimpleReviewInfos(String type, Long id, Pageable pageable) {
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             Store store = storeRepository.findById(id).orElseThrow(StoreNotFoundException::new);
             Page<StoreReview> pages = storeReviewRepository.findStoreReviewsByStore(pageable, store);
             return pages.map(GetReviewListResponseDto::from);
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             Product product = productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
             Page<ProductReview> pages = productReviewRepository.findProductReviewsByProduct(pageable, product);
             return pages.map(GetReviewListResponseDto::from);

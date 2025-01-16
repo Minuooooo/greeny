@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.List;
-import static greeny.backend.domain.Target.*;
+import static greeny.backend.domain.Eco.*;
 import static greeny.backend.response.Response.success;
 import static greeny.backend.response.SuccessMessage.*;
 import static org.springframework.http.HttpStatus.OK;
@@ -41,11 +41,11 @@ public class ReviewController {
             @Valid @RequestPart(name="body") WriteReviewRequestDto writeReviewRequestDto,
             @RequestPart(name = "file", required = false) List<MultipartFile> multipartFiles
     ) {
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             reviewService.writeStoreReview(id,writeReviewRequestDto,multipartFiles,memberService.getCurrentMember());
             return success(SUCCESS_TO_WRITE_STORE_REVIEW);
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             reviewService.writeProductReview(id,writeReviewRequestDto,multipartFiles,memberService.getCurrentMember());
             return success(SUCCESS_TO_WRITE_PRODUCT_REVIEW);
         }
@@ -80,10 +80,10 @@ public class ReviewController {
     @ResponseStatus(OK)
     @Operation(summary = "Get review info API", description = "Put review type and reviewId you want to get")
     public Response getReviewInfo(@RequestParam String type, @RequestParam Long id) {
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             return success(SUCCESS_TO_GET_STORE_REVIEW,reviewService.getStoreReviewInfo(id));
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             return success(SUCCESS_TO_GET_PRODUCT_REVIEW,reviewService.getProductReviewInfo(id));
         }
         else {
@@ -95,10 +95,10 @@ public class ReviewController {
     @ResponseStatus(OK)
     @Operation(summary = "Get review info with Auth API", description = "Put review type and reviewId you want to get")
     public Response getReviewInfoWithAuth(@RequestParam String type, @RequestParam Long id) {
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             return success(SUCCESS_TO_GET_STORE_REVIEW,reviewService.getStoreReviewInfoWithAuth(id,memberService.getCurrentMember()));
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             return success(SUCCESS_TO_GET_PRODUCT_REVIEW,reviewService.getProductReviewInfoWithAuth(id,memberService.getCurrentMember()));
         }
         else {
@@ -111,11 +111,11 @@ public class ReviewController {
     @Operation(summary = "Delete review API", description = "Put review type and object id you want to delete")
     public Response deleteReview(@RequestParam String type, @RequestParam Long id) {
         Member currentMember = memberService.getCurrentMember();
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             reviewService.deleteStoreReview(id,currentMember);
             return success(SUCCESS_TO_DELETE_STORE_REVIEW);
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             reviewService.deleteProductReview(id,currentMember);
             return success(SUCCESS_TO_DELETE_PRODUCT_REVIEW);
         }

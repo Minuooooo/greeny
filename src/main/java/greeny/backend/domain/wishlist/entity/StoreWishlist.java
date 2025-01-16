@@ -12,6 +12,7 @@ import static javax.persistence.FetchType.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Getter
+@Table(uniqueConstraints = @UniqueConstraint(name = "unique_store_member", columnNames = {"store_id", "member_id"}))
 public class StoreWishlist extends AuditEntity {
 
     @Id

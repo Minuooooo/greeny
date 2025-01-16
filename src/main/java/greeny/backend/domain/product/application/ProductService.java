@@ -41,7 +41,7 @@ public class ProductService {
             List<ProductWishlist> productWishlists,
             Pageable pageable
     ) {
-        if(StringUtils.hasText(keyword)){
+        if (StringUtils.hasText(keyword)){
             return checkBookmarkedProduct(
                     productRepository.findProductsByNameContainingIgnoreCase(keyword,pageable).getContent(),
                     productWishlists,

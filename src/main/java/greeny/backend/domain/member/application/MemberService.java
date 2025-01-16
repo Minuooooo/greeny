@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
-import static greeny.backend.domain.Target.*;
+import static greeny.backend.domain.Eco.*;
 
 @Service
 @RequiredArgsConstructor
@@ -104,10 +104,10 @@ public class MemberService {
     }
 
     private void checkAndCancelWishlist(String type, List<Long> idsToDelete) {
-        if (type.equals(STORE.toString())) {
+        if (valueOf(type) == STORE) {
             storeWishlistRepository.deleteStoreWishlistsByIds(idsToDelete);
         }
-        else if (type.equals(PRODUCT.toString())) {
+        else if (valueOf(type) == PRODUCT) {
             productWishlistRepository.deleteProductWishlistsByIds(idsToDelete);
         }
         else {
