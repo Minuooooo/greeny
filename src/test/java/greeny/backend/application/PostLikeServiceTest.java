@@ -1,10 +1,10 @@
 package greeny.backend.application;
 
+import greeny.backend.domain.member.entity.Member;
 import greeny.backend.domain.post.application.PostLikeService;
 import greeny.backend.domain.post.entity.Post;
 import greeny.backend.domain.post.entity.PostLikeRepository;
 import greeny.backend.domain.post.entity.PostRepository;
-import greeny.backend.domain.member.Member;
 import greeny.backend.domain.member.entity.Role;
 import greeny.backend.domain.member.entity.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Slf4j
 class PostLikeServiceTest {
+
     @Autowired
     PostLikeService postLikeService;
     @Autowired
@@ -39,7 +40,7 @@ class PostLikeServiceTest {
         Post savedPost = postRepository.save(createPost(savedWriter));
 
         // When
-        int numberOfThread = 3;
+        int numberOfThread = 5;
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThread);
         CountDownLatch countDownLatch = new CountDownLatch(numberOfThread);
         for (int i = 0; i < numberOfThread; i++) {
@@ -72,6 +73,7 @@ class PostLikeServiceTest {
                 .title("안녕")
                 .content("반가워!")
                 .hits(0)
+                .hasPostFile(false)
                 .build();
     }
 }
