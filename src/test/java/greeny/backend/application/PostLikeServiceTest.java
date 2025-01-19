@@ -11,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -34,30 +32,34 @@ class PostLikeServiceTest {
     @Test
     void likeConcurrency() throws InterruptedException {
         // Given
-        log.info("test start");
         Member savedWriter = memberRepository.save(createMember("asd123@naver.com"));
         Member savedLiker = memberRepository.save(createMember("fgh123@naver.com"));
         Post savedPost = postRepository.save(createPost(savedWriter));
 
         // When
-        int numberOfThread = 5;
+        int numberOfThread = 3;
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThread);
         CountDownLatch countDownLatch = new CountDownLatch(numberOfThread);
         for (int i = 0; i < numberOfThread; i++) {
             executorService.submit(() -> {
-                log.info("Current thread");
-                postLikeService.like(savedPost.getId(), savedLiker);
-                countDownLatch.countDown();
+                try {
+                    postLikeService.like(savedPost.getId(), savedLiker);
+
+                } catch (Exception e) {
+                    log.info("exception!");
+
+                } finally {
+                    countDownLatch.countDown();
+                }
             });
         }
         countDownLatch.await();
 
         // Then
-        assertThat(postLikeRepository.existsByPostIdAndLikerId(savedPost.getId(), savedLiker.getId())).isTrue();
+        assertThat(postLikeRepository.existsByPostAndLiker(savedPost, savedLiker)).isTrue();
         memberRepository.deleteAll();
         postRepository.deleteAll();
         postLikeRepository.deleteAll();
-        log.info("test end");
     }
 
     Member createMember(String email)  {

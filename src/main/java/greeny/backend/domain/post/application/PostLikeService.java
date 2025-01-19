@@ -27,7 +27,7 @@ public class PostLikeService {
     }
 
     public Optional<PostLike> findPostLike(Long postId, Member liker) {
-        return postLikeRepository.findByPostIdAndLiker(postId, liker);
+        return postLikeRepository.findByPostAndLiker(getPost(postId), liker);
     }
 
     public void toggle(Long postId, Member liker, Optional<PostLike> postLike) {
@@ -39,7 +39,7 @@ public class PostLikeService {
     }
 
     public void create(Long postId, Member liker) {
-        Post post = getPost(postId);
+        Post post = getPostWithWriter(postId);
         if (post.getWriter().getId().equals(liker.getId())) {
             throw new SelfLikeNotAllowedException();
         }
@@ -56,6 +56,10 @@ public class PostLikeService {
     }
 
     public Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+    }
+
+    public Post getPostWithWriter(Long postId) {
         return postRepository.findByIdWithWriter(postId).orElseThrow(PostNotFoundException::new);
     }
 }
