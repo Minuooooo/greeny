@@ -5,6 +5,7 @@ import greeny.backend.exception.situation.common.EmptyFileException;
 import greeny.backend.exception.situation.common.FileUploadFailureException;
 import greeny.backend.exception.situation.common.TypeDoesntExistException;
 import greeny.backend.exception.situation.member.*;
+import greeny.backend.exception.situation.post.PostLikeNotFoundException;
 import greeny.backend.exception.situation.post.PostNotFoundException;
 import greeny.backend.exception.situation.post.SelfLikeNotAllowedException;
 import greeny.backend.exception.situation.product.ProductNotFoundException;
@@ -167,6 +168,12 @@ public class ExceptionAdvice {
     @ResponseStatus(FORBIDDEN) // 서버가 요청을 거부하는 경우에 사용
     public Response selfLikeNotAllowedException() {
         return failure(NOT_FOUND, "게시글 작성자는 자기의 게시글에 좋아요를 누를 수 없습니다.");
+    }
+
+    @ExceptionHandler(PostLikeNotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public Response postLikeNotFoundException() {
+        return failure(NOT_FOUND, "요청한 게시글 좋아요를 찾을 수 없습니다.");
     }
 
     @ExceptionHandler(CommentNotFoundException.class)

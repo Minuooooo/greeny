@@ -37,6 +37,7 @@ public class SuccessMessage {
     public static final String SUCCESS_TO_EDIT_POST = "게시글을 수정하는데 성공했습니다.";
 
     public static final String SUCCESS_TO_CREATE_POST_LIKE = "게시글 좋아요 추가에 성공했습니다.";
+    public static final String SUCCESS_TO_CANCEL_POST_LIKE = "게시글 좋아요 취소에 성공했습니다.";
 
     public static final String SUCCESS_TO_WRITE_COMMENT = "댓글을 작성하는데 성공했습니다.";
     public static final String SUCCESS_TO_GET_COMMENT_LIST = "댓글 목록을 불러오는데 성공했습니다.";

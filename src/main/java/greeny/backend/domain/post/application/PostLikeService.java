@@ -5,6 +5,7 @@ import greeny.backend.domain.post.entity.Post;
 import greeny.backend.domain.post.entity.PostLike;
 import greeny.backend.domain.post.entity.PostLikeRepository;
 import greeny.backend.domain.post.entity.PostRepository;
+import greeny.backend.exception.situation.post.PostLikeNotFoundException;
 import greeny.backend.exception.situation.post.PostNotFoundException;
 import greeny.backend.exception.situation.post.SelfLikeNotAllowedException;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,14 @@ public class PostLikeService {
                         .post(post)
                         .liker(liker)
                         .build()
+        );
+    }
+
+    @Transactional
+    public void cancel(Long postId, Member liker) {
+        Post foundPost = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        postLikeRepository.delete(
+                postLikeRepository.findByPostAndLiker(foundPost, liker).orElseThrow(PostLikeNotFoundException::new)
         );
     }
 
