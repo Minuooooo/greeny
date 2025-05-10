@@ -30,7 +30,7 @@ class PostLikeServiceTest {
     PostLikeRepository postLikeRepository;
 
     @Test
-    void likeConcurrency() throws InterruptedException {
+    void createConcurrency() throws InterruptedException {
         // Given
         Member savedWriter = memberRepository.save(createMember("asd123@naver.com"));
         Member savedLiker = memberRepository.save(createMember("fgh123@naver.com"));
@@ -43,7 +43,7 @@ class PostLikeServiceTest {
         for (int i = 0; i < numberOfThread; i++) {
             executorService.submit(() -> {
                 try {
-                    postLikeService.like(savedPost.getId(), savedLiker);
+                    postLikeService.create(savedPost.getId(), savedLiker);
 
                 } catch (Exception e) {
                     log.info("exception!");

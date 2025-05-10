@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,22 +21,6 @@ public class PostLikeService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void like(Long postId, Member liker) {
-        toggle(postId, liker, findPostLike(postId, liker));
-    }
-
-    public Optional<PostLike> findPostLike(Long postId, Member liker) {
-        return postLikeRepository.findByPostAndLiker(getPost(postId), liker);
-    }
-
-    public void toggle(Long postId, Member liker, Optional<PostLike> postLike) {
-        if (postLike.isEmpty()) {
-            create(postId, liker);
-            return;
-        }
-        delete(postLike.get());
-    }
-
     public void create(Long postId, Member liker) {
         Post post = getPostWithWriter(postId);
         if (post.getWriter().getId().equals(liker.getId())) {
@@ -49,14 +32,6 @@ public class PostLikeService {
                         .liker(liker)
                         .build()
         );
-    }
-
-    private void delete(PostLike postLike) {
-        postLikeRepository.delete(postLike);
-    }
-
-    public Post getPost(Long postId) {
-        return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
     public Post getPostWithWriter(Long postId) {

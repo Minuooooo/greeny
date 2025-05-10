@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import static greeny.backend.response.Response.success;
 import static greeny.backend.response.SuccessMessage.*;
@@ -36,7 +37,8 @@ public class PostController {
             @Valid @RequestPart(name = "body(json)") WritePostRequestDto writePostRequestDto,
             @RequestPart(name = "files", required = false) List<MultipartFile> multipartFiles
     ) {
-        postService.writePost(writePostRequestDto, multipartFiles, memberService.getCurrentMember());
+        List<MultipartFile> postFiles = multipartFiles != null ? multipartFiles : Collections.emptyList();
+        postService.writePost(writePostRequestDto, postFiles, memberService.getCurrentMember());
         return success(SUCCESS_TO_WRITE_POST);
     }
 
@@ -84,7 +86,8 @@ public class PostController {
             @Valid @RequestPart(name = "body(json)") WritePostRequestDto editPostInfoRequestDto,
             @RequestPart(name = "files", required = false) List<MultipartFile> multipartFiles
     ) {
-        postService.editPostInfo(postId, editPostInfoRequestDto, multipartFiles, memberService.getCurrentMember());
+        List<MultipartFile> postFiles = multipartFiles != null ? multipartFiles : Collections.emptyList();
+        postService.editPostInfo(postId, editPostInfoRequestDto, postFiles, memberService.getCurrentMember());
         return Response.success(SUCCESS_TO_EDIT_POST);
     }
 }
