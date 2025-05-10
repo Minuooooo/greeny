@@ -21,7 +21,6 @@ public class PostLikeService {
     private final PostLikeRepository postLikeRepository;
     private final PostRepository postRepository;
 
-    @Transactional
     public void create(Long postId, Member liker) {
         Post post = getPostWithWriter(postId);
         if (post.getWriter().getId().equals(liker.getId())) {
